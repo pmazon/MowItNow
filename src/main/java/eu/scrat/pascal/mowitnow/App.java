@@ -8,9 +8,9 @@ import org.slf4j.LoggerFactory;
 public class App {
   private static final String DEFAULT_YARD =
       App.class.getClassLoader().getResource("instructions.txt").getFile();
+  private static Logger logger = LoggerFactory.getLogger(App.class);
 
   public static void main(String[] args) {
-    Logger logger = LoggerFactory.getLogger(App.class);
     Scanner scanner = new Scanner(System.in);
     String filename = null;
     boolean quit = false;
