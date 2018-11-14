@@ -20,7 +20,7 @@ public class Mower {
   }
 
   public Mower(Coordinate coordinate, Orientation orientation) {
-    this(coordinate, orientation, new ArrayList<Direction>());
+    this(coordinate, orientation, new ArrayList<>());
   }
 
   public Mower(Coordinate coordinate, Orientation orientation, List<Direction> directions) {
