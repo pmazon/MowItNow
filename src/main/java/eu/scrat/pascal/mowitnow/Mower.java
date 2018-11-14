@@ -10,6 +10,7 @@ import static eu.scrat.pascal.mowitnow.Orientation.W;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.collections4.CollectionUtils;
+import com.google.common.annotations.VisibleForTesting;
 
 public class Mower {
   private Coordinate localisation;
@@ -40,7 +41,8 @@ public class Mower {
     }
   }
 
-  public void move(Yard yard, Direction direction) {
+  @VisibleForTesting
+  void move(Yard yard, Direction direction) {
     checkNotNull(yard, "Moving requires a yard to mow");
     checkNotNull(direction, "Moving requires a direction");
     switch (this.orientation) {
