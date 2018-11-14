@@ -12,17 +12,17 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Parser {
-  private static String lawnPattern = "(?<signX>[-+]?)(?<x>\\d+) (?<signY>[-+]?)(?<y>\\d+)";
-  private static String mowerPattern =
-      "(?<signX>[-+]?)(?<x>\\d+) (?<signY>[-+]?)(?<y>\\d+) (?<orientation>[NESW])";
-  private static String directionsPattern = "(?<directions>[AGD]+)";
+  private static final Pattern lawnPattern =
+      Pattern.compile("(?<signX>[-+]?)(?<x>\\d+) (?<signY>[-+]?)(?<y>\\d+)");
+  private static final Pattern mowerPattern =
+      Pattern.compile("(?<signX>[-+]?)(?<x>\\d+) (?<signY>[-+]?)(?<y>\\d+) (?<orientation>[NESW])");
+  private static final Pattern directionsPattern = Pattern.compile("(?<directions>[AGD]+)");
 
   public static boolean isLawnLine(String line) {
     if (line == null) {
       return false;
     }
-    Pattern pattern = Pattern.compile(lawnPattern);
-    Matcher matcher = pattern.matcher(line);
+    Matcher matcher = lawnPattern.matcher(line);
     if (matcher.matches()) {
       return true;
     } else {
@@ -34,8 +34,7 @@ public class Parser {
     if (line == null) {
       return false;
     }
-    Pattern pattern = Pattern.compile(mowerPattern);
-    Matcher matcher = pattern.matcher(line);
+    Matcher matcher = mowerPattern.matcher(line);
     if (matcher.matches()) {
       return true;
     } else {
@@ -47,8 +46,7 @@ public class Parser {
     if (line == null) {
       return false;
     }
-    Pattern pattern = Pattern.compile(directionsPattern);
-    Matcher matcher = pattern.matcher(line);
+    Matcher matcher = directionsPattern.matcher(line);
     if (matcher.matches()) {
       return true;
     } else {
@@ -57,8 +55,7 @@ public class Parser {
   }
 
   public static Lawn parseLawn(String lawnLine) {
-    Pattern pattern = Pattern.compile(lawnPattern);
-    Matcher matcher = pattern.matcher(lawnLine);
+    Matcher matcher = lawnPattern.matcher(lawnLine);
     if (!matcher.matches()) {
       throw new IllegalArgumentException(
           "Provided string does not match a Lawn's coordinates, e.g: '-1 3'");
@@ -70,8 +67,7 @@ public class Parser {
 
   public static Mower parseMower(String mowerLine) {
     checkNotNull(mowerLine, "The mower line is required");
-    Pattern pattern = Pattern.compile(mowerPattern);
-    Matcher matcher = pattern.matcher(mowerLine);
+    Matcher matcher = mowerPattern.matcher(mowerLine);
     if (!matcher.matches()) {
       throw new IllegalArgumentException(
           "Provided string does not match a Mower's info, e.g: '3 4 N'");
