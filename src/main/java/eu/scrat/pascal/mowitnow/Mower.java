@@ -9,6 +9,7 @@ import static eu.scrat.pascal.mowitnow.Orientation.S;
 import static eu.scrat.pascal.mowitnow.Orientation.W;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.collections4.CollectionUtils;
 
 public class Mower {
   private Coordinate localisation;
@@ -31,7 +32,7 @@ public class Mower {
   }
 
   public void mow(Yard yard) {
-    if (directions == null || directions.isEmpty()) {
+    if (CollectionUtils.isEmpty(directions)) {
       return;
     }
     for (Direction direction : directions) {
