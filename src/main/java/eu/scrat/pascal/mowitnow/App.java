@@ -14,12 +14,11 @@ public class App {
     Scanner scanner = new Scanner(System.in);
     String filename = null;
     boolean quit = false;
-    String input = null;
     while (!quit) {
       try {
         System.out.print("Yard filename to load [defaults to instructions.txt], or 'q' to quit: ");
-        input = scanner.nextLine();
-        if (input.toUpperCase().equals("Q")) {
+        String input = scanner.nextLine();
+        if ("q".equalsIgnoreCase(input)) {
           quit = true;
           System.out.println("Exiting.");
           break;
