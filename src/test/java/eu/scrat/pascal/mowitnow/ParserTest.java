@@ -34,36 +34,6 @@ class ParserTest {
   }
 
   @Test
-  public void mowerLine() {
-    assertTrue(Parser.isMowerLine("4 5 W"));
-  }
-
-  @Test
-  public void wrongMowerLineThrowsIllegalArgumentException() {
-    assertFalse(Parser.isMowerLine("4 5"));
-  }
-
-  @Test
-  public void nullMowerLineCheck() {
-    assertFalse(Parser.isMowerLine(null));
-  }
-
-  @Test
-  public void directionsLine() {
-    assertTrue(Parser.isDirectionsLine("AAGDDGAA"));
-  }
-
-  @Test
-  public void wrongDirectionsLineThrowsIllegalArgumentException() {
-    assertFalse(Parser.isDirectionsLine("ZZZZAGDGAAAZZZZ"));
-  }
-
-  @Test
-  public void nullDirectionsLineCheck() {
-    assertFalse(Parser.isDirectionsLine(null));
-  }
-
-  @Test
   public void returnDirections() {
     String instructions = "GAADDADGGGADAAAAA";
     List<Direction> directions = List.of(G, A, A, D, D, A, D, G, G, G, A, D, A, A, A, A, A);

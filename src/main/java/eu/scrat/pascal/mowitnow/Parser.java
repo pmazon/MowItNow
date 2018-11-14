@@ -16,37 +16,12 @@ public class Parser {
       Pattern.compile("(?<signX>[-+]?)(?<x>\\d+) (?<signY>[-+]?)(?<y>\\d+)");
   private static final Pattern mowerPattern =
       Pattern.compile("(?<signX>[-+]?)(?<x>\\d+) (?<signY>[-+]?)(?<y>\\d+) (?<orientation>[NESW])");
-  private static final Pattern directionsPattern = Pattern.compile("(?<directions>[AGD]+)");
 
   public static boolean isLawnLine(String line) {
     if (line == null) {
       return false;
     }
     Matcher matcher = lawnPattern.matcher(line);
-    if (matcher.matches()) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  public static boolean isMowerLine(String line) {
-    if (line == null) {
-      return false;
-    }
-    Matcher matcher = mowerPattern.matcher(line);
-    if (matcher.matches()) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  public static boolean isDirectionsLine(String line) {
-    if (line == null) {
-      return false;
-    }
-    Matcher matcher = directionsPattern.matcher(line);
     if (matcher.matches()) {
       return true;
     } else {
