@@ -10,6 +10,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import com.google.common.annotations.VisibleForTesting;
 
 public class Parser {
   private static final Pattern lawnPattern =
@@ -17,19 +18,7 @@ public class Parser {
   private static final Pattern mowerPattern =
       Pattern.compile("(?<signX>[-+]?)(?<x>\\d+) (?<signY>[-+]?)(?<y>\\d+) (?<orientation>[NESW])");
 
-  public static boolean isLawnLine(String line) {
-    if (line == null) {
-      return false;
-    }
-    Matcher matcher = lawnPattern.matcher(line);
-    if (matcher.matches()) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  public static Lawn parseLawn(String lawnLine) {
+  public static Lawn buildLawn(String lawnLine) {
     Matcher matcher = lawnPattern.matcher(lawnLine);
     if (!matcher.matches()) {
       throw new IllegalArgumentException(
@@ -38,6 +27,20 @@ public class Parser {
     return new Lawn(new Coordinate(0, 0),
         new Coordinate(Integer.parseInt(matcher.group("signX") + matcher.group("x")),
             Integer.parseInt(matcher.group("signY") + matcher.group("y"))));
+  }
+
+  @VisibleForTesting
+  static Lawn parseLawn(Scanner scanner) throws ParseException, IllegalArgumentException {
+    if (!scanner.hasNextLine()) {
+      throw new ParseException("Scanner has no line for lawn parsing");
+    }
+    String line = scanner.nextLine();
+    try {
+      return buildLawn(line);
+    } catch (IllegalArgumentException exception) {
+      throw new ParseException(
+          "First line should be a Lawn's coordinates (e.g.: '4 7'), got \"AAAAAA\"", exception);
+    }
   }
 
   public static Mower parseMower(String mowerLine) {
@@ -61,20 +64,11 @@ public class Parser {
   public static Yard parseFile(String filename) throws FileNotFoundException, ParseException {
     checkNotNull(filename, "The file name is required");
     List<Mower> mowers = new ArrayList<>();
-    Lawn lawn = null;
     Yard yard = null;
+    Lawn lawn;
 
     try (Scanner scanner = new Scanner(new FileReader(filename))) {
-      if (scanner.hasNextLine()) {
-        String line = scanner.nextLine();
-        if (!isLawnLine(line)) {
-          throw new ParseException(
-              "First line should be a Lawn's coordinates (e.g.: '4 7'), got \"" + line + "\"");
-        }
-        lawn = parseLawn(line);
-      } else {
-        throw new ParseException("File is empty");
-      }
+      lawn = parseLawn(scanner);
 
       boolean expectedMowerLine = true;
       Mower mower = null;

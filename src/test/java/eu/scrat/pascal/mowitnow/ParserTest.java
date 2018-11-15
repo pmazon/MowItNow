@@ -7,8 +7,6 @@ import static eu.scrat.pascal.mowitnow.Orientation.E;
 import static eu.scrat.pascal.mowitnow.Orientation.N;
 import static eu.scrat.pascal.mowitnow.Orientation.S;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.io.FileNotFoundException;
 import java.util.List;
@@ -18,21 +16,6 @@ import org.junit.runner.RunWith;
 
 @RunWith(JUnitPlatform.class)
 class ParserTest {
-  @Test
-  public void lawnLine() {
-    assertTrue(Parser.isLawnLine("4 5"));
-  }
-
-  @Test
-  public void wrongLawnLineThrowsIllegalArgumentException() {
-    assertFalse(Parser.isLawnLine("4 5 N"));
-  }
-
-  @Test
-  public void nullLawnLineCheck() {
-    assertFalse(Parser.isLawnLine(null));
-  }
-
   @Test
   public void returnDirections() {
     String instructions = "GAADDADGGGADAAAAA";
@@ -53,20 +36,20 @@ class ParserTest {
 
   @Test
   public void returnLawn() {
-    assertEquals(new Lawn(new Coordinate(0, 0), new Coordinate(5, 5)), Parser.parseLawn("5 5"));
+    assertEquals(new Lawn(new Coordinate(0, 0), new Coordinate(5, 5)), Parser.buildLawn("5 5"));
   }
 
   @Test
   public void wrongLawnThrowsIllegalArgumentException() {
     Throwable exception =
-        assertThrows(IllegalArgumentException.class, () -> Parser.parseLawn("1 3 N"));
+        assertThrows(IllegalArgumentException.class, () -> Parser.buildLawn("1 3 N"));
     assertEquals("Provided string does not match a Lawn's coordinates, e.g: '-1 3'",
         exception.getMessage());
   }
 
   @Test
   public void nullStringLawnThrowsNullPointerException() {
-    assertThrows(NullPointerException.class, () -> Parser.parseLawn(null));
+    assertThrows(NullPointerException.class, () -> Parser.buildLawn(null));
   }
 
   @Test
@@ -129,7 +112,7 @@ class ParserTest {
     String filename =
         getClass().getClassLoader().getResource("test_instructions_empty.txt").getFile();
     Throwable exception = assertThrows(ParseException.class, () -> Parser.parseFile(filename));
-    assertEquals("File is empty", exception.getMessage());
+    assertEquals("Scanner has no line for lawn parsing", exception.getMessage());
   }
 
   @Test
