@@ -9,6 +9,8 @@ import static eu.scrat.pascal.mowitnow.Orientation.S;
 import static eu.scrat.pascal.mowitnow.Orientation.W;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.collections4.CollectionUtils;
+import com.google.common.annotations.VisibleForTesting;
 
 public class Mower {
   private Coordinate localisation;
@@ -20,7 +22,7 @@ public class Mower {
   }
 
   public Mower(Coordinate coordinate, Orientation orientation) {
-    this(coordinate, orientation, new ArrayList<Direction>());
+    this(coordinate, orientation, new ArrayList<>());
   }
 
   public Mower(Coordinate coordinate, Orientation orientation, List<Direction> directions) {
@@ -31,7 +33,7 @@ public class Mower {
   }
 
   public void mow(Yard yard) {
-    if (directions == null || directions.isEmpty()) {
+    if (CollectionUtils.isEmpty(directions)) {
       return;
     }
     for (Direction direction : directions) {
@@ -39,7 +41,8 @@ public class Mower {
     }
   }
 
-  public void move(Yard yard, Direction direction) {
+  @VisibleForTesting
+  void move(Yard yard, Direction direction) {
     checkNotNull(yard, "Moving requires a yard to mow");
     checkNotNull(direction, "Moving requires a direction");
     switch (this.orientation) {
