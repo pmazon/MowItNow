@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -70,19 +71,18 @@ public class Parser {
     try (Scanner scanner = new Scanner(new FileReader(filename))) {
       lawn = parseLawn(scanner);
 
-      boolean expectedMowerLine = true;
-      Mower mower = null;
+      Optional<Mower> optionalMower = Optional.empty();
       while (scanner.hasNextLine()) {
         String line = scanner.nextLine();
         if (line.equals("")) {
           // Silently ignore empty lines
           continue;
         }
-        if (expectedMowerLine) {
+        if (!optionalMower.isPresent()) {
           try {
-            mower = parseMower(line);
+            Mower mower = parseMower(line);
             mowers.add(mower);
-            expectedMowerLine = false;
+            optionalMower = Optional.of(mower);
           } catch (IllegalArgumentException exception) {
             throw new ParseException(
                 "Line should be a Mower specification (e.g.: '1 3 W'), got \"" + line + "\"",
@@ -92,8 +92,8 @@ public class Parser {
           // expecting a list of directions
           try {
             List<Direction> directions = parseDirections(line);
-            mower.setDirections(directions);
-            expectedMowerLine = true;
+            optionalMower.get().setDirections(directions);
+            optionalMower = Optional.empty();
           } catch (IllegalArgumentException exception) {
             throw new ParseException(
                 "Line should be a list of directions (e.g.: 'AADGGDA'), got \"" + line + "\"",
