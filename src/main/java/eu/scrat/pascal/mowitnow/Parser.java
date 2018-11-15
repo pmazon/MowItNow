@@ -85,7 +85,6 @@ public class Parser {
   public static Yard parseFile(String filename) throws FileNotFoundException, ParseException {
     checkNotNull(filename, "The file name is required");
     List<Mower> mowers = new ArrayList<>();
-    Yard yard = null;
     Lawn lawn;
 
     try (Scanner scanner = new Scanner(new FileReader(filename))) {
@@ -109,10 +108,9 @@ public class Parser {
       }
     }
     try {
-      yard = new Yard(lawn, mowers);
+      return new Yard(lawn, mowers);
     } catch (IllegalArgumentException exception) {
       throw new ParseException("Some mowers have identical initial position", exception);
     }
-    return yard;
   }
 }
