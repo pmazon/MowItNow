@@ -17,7 +17,7 @@ import org.junit.runner.RunWith;
 @RunWith(JUnitPlatform.class)
 class ParserTest {
   @Test
-  public void returnDirections() {
+  public void returnDirections() throws ParseException {
     String instructions = "GAADDADGGGADAAAAA";
     List<Direction> directions = List.of(G, A, A, D, D, A, D, G, G, G, A, D, A, A, A, A, A);
     assertEquals(directions, Parser.parseDirections(instructions));
@@ -26,7 +26,10 @@ class ParserTest {
   @Test
   public void wrongDirectionsThrowsIllegalArgumentException() {
     String instructions = "AAADDDZZZZZZ";
-    assertThrows(IllegalArgumentException.class, () -> Parser.parseDirections(instructions));
+    Throwable exception =
+        assertThrows(ParseException.class, () -> Parser.parseDirections(instructions));
+    assertEquals("Line should be a list of directions (e.g.: 'AADGGDA'), got \"AAADDDZZZZZZ\"",
+        exception.getMessage());
   }
 
   @Test
@@ -54,20 +57,20 @@ class ParserTest {
 
   @Test
   public void returnMower() {
-    assertEquals(new Mower(1, 3, S), Parser.parseMower("1 3 S"));
+    assertEquals(new Mower(1, 3, S), Parser.buildMower("1 3 S"));
   }
 
   @Test
   public void wrongMowerThrowsIllegalArgumentException() {
     Throwable exception =
-        assertThrows(IllegalArgumentException.class, () -> Parser.parseMower("1 3"));
+        assertThrows(IllegalArgumentException.class, () -> Parser.buildMower("1 3"));
     assertEquals("Provided string does not match a Mower's info, e.g: '3 4 N'",
         exception.getMessage());
   }
 
   @Test
   public void nullStringMowerThrowsNullPointerException() {
-    assertThrows(NullPointerException.class, () -> Parser.parseMower(null));
+    assertThrows(NullPointerException.class, () -> Parser.buildMower(null));
   }
 
   @Test

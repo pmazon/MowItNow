@@ -44,7 +44,7 @@ public class Parser {
     }
   }
 
-  public static Mower parseMower(String mowerLine) {
+  public static Mower buildMower(String mowerLine) {
     checkNotNull(mowerLine, "The mower line is required");
     Matcher matcher = mowerPattern.matcher(mowerLine);
     if (!matcher.matches()) {
@@ -57,9 +57,29 @@ public class Parser {
     return new Mower(x, y, orientation);
   }
 
-  public static List<Direction> parseDirections(String directionLine) {
+  @VisibleForTesting
+  static Mower parseMower(String line) throws ParseException {
+    try {
+      return buildMower(line);
+    } catch (IllegalArgumentException exception) {
+      throw new ParseException(
+          "Line should be a Mower specification (e.g.: '1 3 W'), got \"" + line + "\"", exception);
+    }
+  }
+
+  public static List<Direction> buildDirections(String directionLine) {
     return Stream.of(directionLine.split("")).map(dir -> Direction.valueOf(dir))
         .collect(Collectors.toList());
+  }
+
+  @VisibleForTesting
+  static List<Direction> parseDirections(String line) throws ParseException {
+    try {
+      return buildDirections(line);
+    } catch (IllegalArgumentException exception) {
+      throw new ParseException(
+          "Line should be a list of directions (e.g.: 'AADGGDA'), got \"" + line + "\"", exception);
+    }
   }
 
   public static Yard parseFile(String filename) throws FileNotFoundException, ParseException {
@@ -75,30 +95,16 @@ public class Parser {
       while (scanner.hasNextLine()) {
         String line = scanner.nextLine();
         if (line.equals("")) {
-          // Silently ignore empty lines
-          continue;
+          continue; // Silently ignore empty lines
         }
         if (!optionalMower.isPresent()) {
-          try {
-            Mower mower = parseMower(line);
-            mowers.add(mower);
-            optionalMower = Optional.of(mower);
-          } catch (IllegalArgumentException exception) {
-            throw new ParseException(
-                "Line should be a Mower specification (e.g.: '1 3 W'), got \"" + line + "\"",
-                exception);
-          }
+          Mower mower = parseMower(line);
+          mowers.add(mower);
+          optionalMower = Optional.of(mower);
         } else {
-          // expecting a list of directions
-          try {
-            List<Direction> directions = parseDirections(line);
-            optionalMower.get().setDirections(directions);
-            optionalMower = Optional.empty();
-          } catch (IllegalArgumentException exception) {
-            throw new ParseException(
-                "Line should be a list of directions (e.g.: 'AADGGDA'), got \"" + line + "\"",
-                exception);
-          }
+          List<Direction> directions = parseDirections(line);
+          optionalMower.get().setDirections(directions);
+          optionalMower = Optional.empty();
         }
       }
     }
