@@ -1,0 +1,8 @@
+language: java
+
+jdk:
+  - openjdk10
+  - openjdk11
+
+# no dependencies required, skip install phase
+install: true
